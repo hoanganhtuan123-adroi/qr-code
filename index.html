@@ -29,7 +29,7 @@
       }
 
       .viewer-container {
-        margin-top: 40px;
+        /* margin-top: 40px; */
         position: fixed;
         inset: 0;
         width: 100vw;
@@ -40,9 +40,10 @@
       }
 
       .qr-image {
+        margin-top: 70px;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         object-position: bottom center;
         display: block;
         user-select: none;
@@ -53,20 +54,46 @@
       /* Đồng bộ chuẩn font hệ thống iOS / PingFang SC như trong ảnh */
       .countdown-timer {
         position: absolute;
-        bottom: 42%;
+        bottom: 36%;
         left: 50%;
         transform: translateX(-50%);
 
         /* Chuỗi font gốc của ứng dụng trên iOS */
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
         font-variant-numeric: tabular-nums; /* Cố định độ rộng từng con số để không bị giật khi đếm */
         -webkit-font-smoothing: antialiased;
-        
+
         color: #19be6b; /* Mã màu xanh lục dịu giống hệt số 02:09 trong ảnh */
-        font-size: clamp(19px, 4.8vw, 22px);
-        font-weight: 400; /* Nét thanh mảnh tự nhiên thay vì in đậm */
+        font-size: 16px;
+        font-weight: 450; /* Nét thanh mảnh tự nhiên thay vì in đậm */
         letter-spacing: 0.5px;
-        
+
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .timer {
+        position: absolute;
+        top: 23.5%;
+        left: 50%;
+        transform: translateX(-50%);
+
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+
+        font-variant-numeric: tabular-nums;
+        -webkit-font-smoothing: antialiased;
+
+        color: #3a393a;
+        font-size: 15px;
+        font-weight: 480;
+        letter-spacing: -0.5px;
+        white-space: nowrap;
+
         user-select: none;
         pointer-events: none;
       }
@@ -75,28 +102,42 @@
   <body>
     <div class="viewer-container">
       <img
-        src="qr_code.png"
+        src="qr.png"
         alt="Màn hình xác minh QR bảo mật"
         class="qr-image"
       />
       <div class="countdown-timer" id="countdownTimer">02:30</div>
+      <div class="timer" id="timer"></div>
     </div>
 
     <script>
       let timeLeft = 150;
-      const timerElement = document.getElementById('countdownTimer');
-
+      const timerElement = document.getElementById("countdownTimer");
+      function pad(n) {
+        return String(n).padStart(2, "0");
+      }
       function updateTimer() {
-        const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-        const seconds = String(timeLeft % 60).padStart(2, '0');
+        const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+        const seconds = String(timeLeft % 60).padStart(2, "0");
 
         timerElement.textContent = `${minutes}:${seconds}`;
-
         if (timeLeft > 0) {
           timeLeft--;
         } else {
           timeLeft = 150;
         }
+
+        const now = new Date();
+
+        const text =
+          `${now.getFullYear()}-` +
+          `${pad(now.getMonth() + 1)}-` +
+          `${pad(now.getDate())} ` +
+          `${pad(now.getHours())}:` +
+          `${pad(now.getMinutes())}:` +
+          `${pad(now.getSeconds())}`;
+
+        document.querySelector(".timer").textContent = text;
       }
 
       updateTimer();
